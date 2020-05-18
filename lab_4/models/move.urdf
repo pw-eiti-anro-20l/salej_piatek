@@ -20,7 +20,7 @@
             <geometry>
                 <cylinder length="${base_len}" radius="${base_rad}"/>
             </geometry>
-            <origin xyz="0 0 0"/>
+            <origin xyz="0 0 ${-props['i1']['l_len']/2}"/>
             <material name="white"/>
         </visual>
     </link>
@@ -30,7 +30,7 @@
             <geometry>
                 <box size="${l_width} ${l_width} ${props['i2']['l_len']}"/>
             </geometry>
-            <origin xyz="0 0 ${-props['i1']['l_len']/2}" rpy="${props['i2']['l_rpy']}"/>
+            <origin xyz="0 0 ${-props['i2']['l_len']/2}" rpy="${props['i2']['l_rpy']}"/>
             <material name="blue"/>
         </visual>
     </link>
