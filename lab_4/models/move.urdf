@@ -69,7 +69,7 @@
         <child link="link_2"/>
         <origin xyz="${props['i2']['j_xyz']}" rpy="${props['i2']['j_rpy']}"/>
         <axis xyz="0 0 1"/>
-        <limit effort="1000.0" lower="-0.2" upper="0.1" velocity="0.5"/>
+        <limit effort="1000.0" lower="-0.2" upper="0" velocity="0.5"/>
     </joint>
 
     <joint name="link2_to_link3" type="prismatic">

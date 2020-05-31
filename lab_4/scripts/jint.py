@@ -15,7 +15,8 @@ from collections import OrderedDict
 
 
 path = Path()
-freq = 50
+freq = 100
+
 
 def getParams():
 	file_path = os.path.realpath(__file__)
@@ -25,13 +26,13 @@ def getParams():
 
 def is_allowed_interpolation_request(req):
 	if not 0 <= req.joint1 <= 0.2:
-		rospy.logerr("Blad. Pozycja joint1 powinna byc w zakresie 0 do 0.2.")
+		rospy.logerr("Blad. Pozycja joint1 powinna byc w zakresie 0 do 0.2")
 		return False
 	if not 0 <= req.joint2 <= 0.2:
-		rospy.logerr("Blad. Pozycja joint2 powinna byc w zakresie -0.2 do 0.")
+		rospy.logerr("Blad. Pozycja joint2 powinna byc w zakresie 0 do 0.2")
 		return False
 	if not 0 <= req.joint3 <= 0.2:
-		rospy.logerr("Blad. Pozycja joint3 powinna byc w zakresie -0.2 do 0.")
+		rospy.logerr("Blad. Pozycja joint3 powinna byc w zakresie 0 do 0.2")
 		return False
 
 	if req.time <= 0:
@@ -59,7 +60,7 @@ def create_empty_joint_state():
 	empty_joint_state = JointState()
 	empty_joint_state.header = Header()
 	empty_joint_state.header.stamp = rospy.Time.now()
-	empty_joint_state.name = ['base_to_link_1', 'link1_to_link_2', 'link2_to_link_3']
+	empty_joint_state.name = ['base_to_link1', 'link1_to_link2', 'link2_to_link3']
 	empty_joint_state.velocity = []
 	empty_joint_state.effort = []
 	return empty_joint_state
@@ -117,13 +118,14 @@ def handle_interpolation_request(req):
 
 	if not is_allowed_interpolation_request(req):
 		return False
-
-	start_pos = rospy.wait_for_message('joint_states', JointState, timeout = 10).position
+	
+	
 	request_pos = [req.joint1, -req.joint2, -req.joint3]
-
+	start_pos = rospy.wait_for_message('joint_states', JointState, timeout = 3).position
 	rate = rospy.Rate(freq)
 	frames_number = int(math.ceil(req.time * freq))
 	current_time = 0.
+	
 
 	if req.int_type == "linear":
 		for k in range(0, frames_number + 1):
@@ -158,8 +160,7 @@ def handle_interpolation_request(req):
 if __name__ == "__main__":
 	params = getParams()
 	rospy.init_node('jint')
-	pub = rospy.Publisher('interpolation', JointState, queue_size = 10)
+	pub = rospy.Publisher('/interpol', JointState, queue_size = 10)
 	path_pub = rospy.Publisher('jint_path', Path, queue_size=10)
 	s = rospy.Service('jint_control_srv', JintServiceStruct, handle_interpolation_request)
-	rospy.Subscriber('joint_states', JointState, publish_path)
 	rospy.spin()
